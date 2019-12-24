@@ -1,8 +1,12 @@
 -module(area_server1).
 
+-import(io, [format/2]).
 -export([start/0, area/2]).
 
-start() -> spawn(fun loop/0).
+start() ->
+    Pid = spawn(fun loop/0),
+    io:format("Pid:~p~n", [Pid]),
+    Pid.
 
 area(Pid, What) ->
     rpc(Pid, What).
@@ -10,8 +14,7 @@ area(Pid, What) ->
 rpc(Pid, Request) ->
     Pid ! {self(), Request},
     receive
-        {Pid, Response} ->
-            Response
+        Resp -> Resp
     end.
 
 loop() ->
